@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.fc-media-screen {
+  width: calc(100vw - 256px);
+}
+
+.fc .fc-button-group > .fc-button.fc-button-active {
+  z-index: unset;
+}
+
+* {
+  font-family: "Noto Sans Khojki", sans-serif;
+}
+
+/* DateTimePicker */
+
+.react-datetime-picker__wrapper {
+  border: unset !important;
+}
+
+.react-datetime-picker__inputGroup__divider {
+}
