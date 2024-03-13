@@ -36,3 +36,7 @@ const persistor = persistStore(store);
 
 export { persistor };
 export default store;
+
+export type UserStore = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch;

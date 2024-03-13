@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import { State } from "../redux/userSlice";
 import {
   Avatar,
   Menu,
@@ -9,15 +8,16 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { UserStore } from "../store/store";
 
 export const Header = () => {
-  const { user } = useSelector((state: State) => state.userStore);
+  const { user } = useSelector((state: UserStore) => state.userStore);
 
   return (
     <header className="h-[64px] flex p-2 items-center text-gray-700/80">
       <ul className="flex gap-3 w-full h-full items-center">
         <li className="ml-0 mr-auto font-bold">
-          {user.firstName + " " + user.lastName}
+          {user?.firstName + " " + user?.lastName}
         </li>
         <li className="mr-0">Todos</li>
         <li className="mr-9">Menu-2</li>
