@@ -18,7 +18,7 @@ import { User, loginUser } from "../redux/userSlice";
 import { useEffect } from "react";
 import { PayloadAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router";
-import axios from "axios";
+import { APILogin } from "../utils/APILogin";
 
 export const LoginPage = () => {
   const dispatch: ThunkDispatch<User, User, PayloadAction> = useDispatch();
@@ -33,8 +33,8 @@ export const LoginPage = () => {
     }
   }, [user]);
 
-  const setCsrfCall = () => {
-    axios.get(import.meta.env.VITE_API_URL + "api/accout");
+  const setCsrfCall = async () => {
+    await APILogin.get("api/accout");
   };
 
   const handleLogin = (data: FieldValues) => {
