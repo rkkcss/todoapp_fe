@@ -31,8 +31,12 @@ export const LoginPage = () => {
     if (user) {
       navigate("/home");
     }
-    axios.get(import.meta.env.VITE_API_URL + "api/accout");
+    getAccountInfo();
   }, [user]);
+
+  const getAccountInfo = async () => {
+    await axios.get(import.meta.env.VITE_API_URL + "api/accout");
+  };
 
   const handleLogin = (data: FieldValues) => {
     dispatch(loginUser(data));
