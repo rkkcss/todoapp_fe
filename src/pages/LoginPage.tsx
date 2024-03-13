@@ -31,11 +31,10 @@ export const LoginPage = () => {
     if (user) {
       navigate("/home");
     }
-    getAccountInfo();
   }, [user]);
 
-  const getAccountInfo = async () => {
-    await axios.get(import.meta.env.VITE_API_URL + "api/accout");
+  const setCsrfCall = () => {
+    axios.get(import.meta.env.VITE_API_URL + "api/accout");
   };
 
   const handleLogin = (data: FieldValues) => {
@@ -102,7 +101,12 @@ export const LoginPage = () => {
               </InputGroup>
             </div>
 
-            <Button className="w-full mt-6" colorScheme="purple" type="submit">
+            <Button
+              className="w-full mt-6"
+              colorScheme="purple"
+              type="submit"
+              onClick={setCsrfCall}
+            >
               Belépés
             </Button>
           </form>
