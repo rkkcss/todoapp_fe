@@ -34,7 +34,7 @@ export const LoginPage = () => {
   }, [user]);
 
   const setCsrfCall = async () => {
-    await APILogin.get("api/accout");
+    await APILogin.get("api/account");
   };
 
   const handleLogin = (data: FieldValues) => {
