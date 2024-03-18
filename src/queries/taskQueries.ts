@@ -1,16 +1,7 @@
 import { FieldValues } from "react-hook-form";
 import { API } from "../utils/API";
 import { toast } from "react-toastify";
-
-export type Task = {
-  id?: number;
-  title: string;
-  createdDate: Date;
-  description: string;
-  startDate: Date;
-  endDate: Date;
-  modifiedDate: Date;
-};
+import { Task } from "../redux/taskSlice";
 
 export const getTasks = async (): Promise<Task[]> => {
   return await API.get("api/tasks")
@@ -23,7 +14,7 @@ export const getTasks = async (): Promise<Task[]> => {
 };
 
 export const createTask = async (task: FieldValues): Promise<Task> => {
-  return await API.post("api/tasks", task)
+  return await API.post("api/task", task)
     .then((res) => {
       return res.data;
     })

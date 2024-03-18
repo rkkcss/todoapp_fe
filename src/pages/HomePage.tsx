@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
-import { Task, getTasks } from "../queries/taskQueries";
+import { useEffect } from "react";
 import { Header } from "../components/Header";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { CalendarLeftSide } from "../components/CalendarLeftSide";
 import { EventSourceInput } from "@fullcalendar/core/index.js";
+import { useDispatch, useSelector } from "react-redux";
+import { TaskStore } from "../store/store";
+import { Task, fetchTasks } from "../redux/taskSlice";
+import { PayloadAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 export const HomePage = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { tasks } = useSelector((state: TaskStore) => state.taskStore);
+  const dispatch: ThunkDispatch<Task, Task, PayloadAction> = useDispatch();
 
   useEffect(() => {
-    getTasks().then((data) => {
-      setTasks(data);
-    });
+    dispatch(fetchTasks());
   }, []);
 
   return (
@@ -22,7 +24,7 @@ export const HomePage = () => {
       </div>
       <div className="flex h-[calc(100vh-73px)] mr-3">
         <div className="w-[256px] p-4">
-          <CalendarLeftSide tasks={tasks} />
+          <CalendarLeftSide />
         </div>
         <FullCalendar
           events={tasks as EventSourceInput}

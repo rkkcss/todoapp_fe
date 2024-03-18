@@ -1,15 +1,27 @@
-import { Task } from "../queries/taskQueries";
 import { Tooltip } from "@chakra-ui/react";
 import { GrClose } from "react-icons/gr";
 import { IoSettingsOutline } from "react-icons/io5";
+import { Task, deleteTask } from "../redux/taskSlice";
+import { useDispatch } from "react-redux";
+import { PayloadAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 type Props = {
   task: Task;
+  openModal: (task: Task) => void;
 };
 
-export const LeftMenuTaskItem = ({ task }: Props) => {
+export const LeftMenuTaskItem = ({ task, openModal }: Props) => {
+  const dispatch: ThunkDispatch<string, number, PayloadAction> = useDispatch();
+
+  const deleteTaskHandler = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(deleteTask(task.id));
+  }
+
   return (
     <li
+      onClick={() => openModal(task)}
       className="flex 
         gap-3 
         justify-between 
@@ -29,7 +41,7 @@ export const LeftMenuTaskItem = ({ task }: Props) => {
       </Tooltip>
       <div className="hidden group-hover:flex gap-3 bg-white">
         <Tooltip label="Delete task">
-          <div className="p-1.5 rounded-full hover:bg-gray-200 cursor-pointer group">
+          <div onClick={deleteTaskHandler} className="p-1.5 rounded-full hover:bg-gray-200 cursor-pointer group">
             <GrClose className="text-lg" />
           </div>
         </Tooltip>

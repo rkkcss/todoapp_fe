@@ -3,23 +3,32 @@ import { RiTodoLine } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 import { CreateTaskModal } from "./Modals/CreateTaskModal";
 import { useState } from "react";
-import { Task } from "../queries/taskQueries";
-import { useTodayTasks } from "../hooks/useTodayTasks";
 import { LeftMenuTaskItem } from "./LeftMenuTaskItem";
+import noDataSvg from "../assets/no-data-icon.svg";
+import { Task, setSelectedTask } from "../redux/taskSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { TaskStore } from "../store/store";
 
-type Props = {
-  tasks: Task[];
-};
-
-export const CalendarLeftSide = ({ tasks }: Props) => {
+export const CalendarLeftSide = () => {
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
-  const todayTasks = useTodayTasks(tasks);
+  const { todaysTasks } = useSelector((state: TaskStore) => state.taskStore);
+  const dispatch = useDispatch();
+
+  const openTaskModal = (task: Task) => {
+    dispatch(setSelectedTask(task));
+    setIsCreateTaskModalOpen(true);
+  }
+
+  const closeTaskModal = () => {
+    setIsCreateTaskModalOpen(false);
+    dispatch(setSelectedTask(null));
+  }
 
   return (
     <>
       <CreateTaskModal
         isOpen={isCreateTaskModalOpen}
-        onClose={() => setIsCreateTaskModalOpen(false)}
+        onClose={closeTaskModal}
       />
       <Button
         leftIcon={<IoMdAdd className="text-2xl" />}
@@ -37,9 +46,16 @@ export const CalendarLeftSide = ({ tasks }: Props) => {
       </div>
       <div>
         <ul className="flex flex-col gap-1">
-          {todayTasks.map((task) => (
-            <LeftMenuTaskItem key={task.id} task={task} />
-          ))}
+          {todaysTasks.length > 0 ? todaysTasks.map((task) => (
+            <LeftMenuTaskItem key={task.id} task={task} openModal={openTaskModal} />
+          ))
+            : (
+              <p className="text-gray-500 flex flex-col items-center">
+                <img src={noDataSvg} alt="No data" className="w-8" />
+                No tasks for today
+              </p>
+            )
+          }
         </ul>
       </div>
     </>

@@ -17,7 +17,11 @@ import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 import DateTimePicker from "react-datetime-picker";
 import moment from "moment";
-import { createTask } from "../../queries/taskQueries";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { TaskStore } from "../../store/store";
+import { PayloadAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { Task, createTask } from "../../redux/taskSlice";
 
 type Props = {
   isOpen: boolean;
@@ -25,16 +29,29 @@ type Props = {
 };
 
 export const CreateTaskModal = ({ isOpen, onClose }: Props) => {
+  const { selectedTask } = useSelector((state: TaskStore) => state.taskStore);
+  const dispatch: ThunkDispatch<Task, Task, PayloadAction> = useDispatch();
+
   const submitForm = (data: FieldValues) => {
-    createTask(data);
+    dispatch(createTask(data)).then(() => onClose());
   };
 
   const {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues: selectedTask as FieldValues });
+
+  useEffect(() => {
+    if (selectedTask) {
+      reset(selectedTask);
+    } else {
+      reset({});
+      reset({});
+    }
+  }, [isOpen]);
 
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
