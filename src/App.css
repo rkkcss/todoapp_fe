@@ -6,7 +6,7 @@
   width: calc(100vw - 256px);
 }
 
-.fc .fc-button-group > .fc-button.fc-button-active {
+.fc .fc-button-group>.fc-button.fc-button-active {
   z-index: unset;
 }
 
@@ -20,5 +20,6 @@
   border: unset !important;
 }
 
-.react-datetime-picker__inputGroup__divider {
+.fc-daygrid-event-harness:hover {
+  cursor: pointer;
 }

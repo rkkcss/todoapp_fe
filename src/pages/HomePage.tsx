@@ -1,17 +1,34 @@
-import { useEffect } from "react";
-import { Header } from "../components/Header";
+import { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import { CalendarLeftSide } from "../components/CalendarLeftSide";
 import { EventSourceInput } from "@fullcalendar/core/index.js";
 import { useDispatch, useSelector } from "react-redux";
 import { TaskStore } from "../store/store";
-import { Task, fetchTasks } from "../redux/taskSlice";
-import { PayloadAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { Task, fetchTasks, setSelectedTask } from "../redux/taskSlice";
+import { Action, ThunkDispatch } from "@reduxjs/toolkit";
+import { CreateTaskModal } from "../components/Modals/CreateTaskModal";
+import { toast } from "react-toastify";
 
 export const HomePage = () => {
   const { tasks } = useSelector((state: TaskStore) => state.taskStore);
-  const dispatch: ThunkDispatch<Task, Task, PayloadAction> = useDispatch();
+  const dispatch: ThunkDispatch<Task, Task, Action> = useDispatch();
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const openModal = (publicId: string) => {
+    const resultTask = tasks.find((task) => task.id == Number(publicId));
+    resultTask ?
+      dispatch(setSelectedTask(resultTask))
+      :
+      toast.error("Task not found!");
+
+    setIsCreateModalOpen(true);
+  }
+
+  const closeModal = () => {
+    dispatch(setSelectedTask(null));
+    setIsCreateModalOpen(false);
+  }
 
   useEffect(() => {
     dispatch(fetchTasks());
@@ -19,29 +36,25 @@ export const HomePage = () => {
 
   return (
     <>
-      <div className="border-b mb-2">
-        <Header />
-      </div>
-      <div className="flex h-[calc(100vh-73px)] mr-3">
-        <div className="w-[256px] p-4">
-          <CalendarLeftSide />
-        </div>
-        <FullCalendar
-          events={tasks as EventSourceInput}
-          plugins={[dayGridPlugin]}
-          eventDataTransform={function (eventData) {
-            return {
-              ...eventData,
-              start: eventData.startDate, // Itt átnevezed a startDate-t start-ra
-            };
-          }}
-          headerToolbar={{
-            left: "prev,next",
-            center: "title",
-            right: "dayGridMonth,dayGridWeek,dayGridDay",
-          }}
-        />
-      </div>
+      <CreateTaskModal isOpen={isCreateModalOpen} onClose={closeModal} />
+      <FullCalendar
+        events={tasks as EventSourceInput}
+        plugins={[dayGridPlugin]}
+        eventDataTransform={function (eventData) {
+          return {
+            ...eventData,
+            start: eventData.startDate, // Itt átnevezed a startDate-t start-ra
+          };
+        }}
+        eventClick={(e) => openModal(e.event._def.publicId)}
+        headerToolbar={{
+          left: "prev,next",
+          center: "title",
+          right: "dayGridMonth,dayGridWeek,dayGridDay",
+        }}
+      />
+      {/* <Outlet /> */}
+      {/* </div> */}
     </>
   );
 };

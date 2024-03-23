@@ -2,6 +2,12 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { API } from "../utils/API";
 import { APILogin } from "../utils/APILogin";
 import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
+
+export type ChangeNameDTO = {
+  firstName: string;
+  lastName: string;
+}
 
 export type User = {
   id?: string;
@@ -54,12 +60,13 @@ export const logoutUser = createAsyncThunk("logoutUser", async () => {
   await API.post("/api/logout");
 });
 
-export const updateUserApi = createAsyncThunk<User, User>(
-  "updateUser",
-  async (user: User) => {
-    await API.post("/api/account", user);
-    return user;
-  }
+export const updateNameInfos = createAsyncThunk<FieldValues, FieldValues>("updateUser",
+  async (userNames: FieldValues): Promise<FieldValues> => {
+    console.log('userNames', userNames);
+    const response = await API.post<string>("/api/profile/userinfo", userNames);
+    toast.success(response.data);
+    return userNames;
+  },
 );
 
 const loginSlice = createSlice({
@@ -113,8 +120,11 @@ const loginSlice = createSlice({
         state.loading = false;
         state.user = null;
       })
-      .addCase(updateUserApi.rejected, (state: State) => {
-        console.log("updateerror", state);
+      .addCase(updateNameInfos.fulfilled, (state: State, action) => {
+        return {
+          ...state,
+          user: state.user ? { ...state.user, ...action.payload } : null
+        };
       });
   },
 });

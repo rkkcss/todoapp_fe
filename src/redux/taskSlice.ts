@@ -80,7 +80,7 @@ const tasksSlice = createSlice({
     name: "taskStore",
     initialState,
     reducers: {
-        setSelectedTask(state, action: PayloadAction<null | Task>) {
+        setSelectedTask(state, action: PayloadAction<Task | null>) {
             state.selectedTask = action.payload;
         },
         addTask(state, action: PayloadAction<Task>) {
